@@ -1,5 +1,6 @@
 ---
 galaxy_info:
+  role_name: secure-docker
   author: Martin Reinhardt, <contact@martinreinhardt-online.de>
   description: Role securing docker
 
