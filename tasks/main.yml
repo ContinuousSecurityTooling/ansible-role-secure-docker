@@ -1,0 +1,9 @@
+---
+
+- name: Create docker config folder
+  file:
+    path: /etc/docker/
+    state: directory
+  tags:
+    - docker
+    - security

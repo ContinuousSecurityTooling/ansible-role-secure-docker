@@ -1,0 +1,22 @@
+---
+extends: default
+rules:
+  line-length:
+    max: 150
+    level: warning
+  braces:
+    max-spaces-inside: 1
+    level: error
+  brackets:
+    max-spaces-inside: 1
+    level: error
+  line-length: disable
+ignore: |
+  *.yaml
+  deploy.yml
+  test.yml
+  update.yml
+  *.sh
+  *.py
+  */*.sh
+  roles/

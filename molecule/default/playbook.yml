@@ -1,0 +1,26 @@
+---
+- name: Converge
+  hosts: all
+
+  vars:
+    mysql_version: 5.7
+    mysql_users:
+      - name: "testUser"
+        host: 127.0.0.1
+        password: "password"
+        priv: "testDB.*:ALL"
+    mysql_databases:
+      - name: "testDB"
+
+
+  roles:
+    - role: ansible-secure-docker
+
+  post_tasks:
+    - name: Starting a container
+      docker_container:
+        name: web
+        image: nginx:latest
+        ports:
+          - "80:80"
+        state: started

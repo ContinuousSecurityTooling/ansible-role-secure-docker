@@ -1,0 +1,5 @@
+[flake8]
+# do not add excludes for files in repo
+exclude = .venv/,.tox/,dist/,build/,.eggs/
+format = pylint
+ignore = E302,E501

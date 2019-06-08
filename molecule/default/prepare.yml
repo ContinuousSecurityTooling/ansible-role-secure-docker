@@ -1,0 +1,33 @@
+---
+- hosts: all
+  gather_facts: true
+
+  tasks:
+    - name: Install Docker
+      apt:
+        name: docker
+        state: present
+
+    - name: Install setuptools
+      apt:
+        name: python-setuptools
+        state: present
+
+    - name: Install pip
+      apt:
+        name: python-pip
+        state: present
+
+    - name: Install Docker PIP
+      pip:
+        name: docker
+
+    - name: Create /etc/modules
+      file:
+        name: /etc/modules
+        state: touch
+
+    - name: Create /etc/sysctl.conf
+      file:
+        name: /etc/sysctl.conf
+        state: touch

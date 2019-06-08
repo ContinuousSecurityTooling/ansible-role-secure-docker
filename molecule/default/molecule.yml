@@ -1,0 +1,33 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: docker
+lint:
+  name: yamllint
+platforms:
+  - name: instance
+    image: debian:9
+    privileged: true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:rw
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    command: /sbin/init
+    capabilities:
+      - SYS_ADMIN
+    groups:
+      - debian
+provisioner:
+  name: ansible
+  playbooks:
+    prepare: prepare.yml
+    converge: playbook.yml
+  options:
+    vvv: true
+  log: true
+  lint:
+    name: ansible-lint
+verifier:
+  name: testinfra
+  lint:
+    name: flake8
