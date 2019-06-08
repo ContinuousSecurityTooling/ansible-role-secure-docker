@@ -14,7 +14,7 @@
 
 
   roles:
-    - role: ansible-secure-docker
+    - role: secure-docker
 
   post_tasks:
     - name: Starting a container
