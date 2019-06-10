@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+# Check if the PRE_DOCKER chain exists, if it does there's an existing reference to it.
+iptables -C FORWARD -o docker0 -j BEFORE_DOCKER
+
+if [ $? -eq 0 ]; then
+  # Remove reference (will be re-added again later in this script)
+  iptables -D FORWARD -o docker0 -j BEFORE_DOCKER
+  # Flush all existing rules
+  iptables -F BEFORE_DOCKER
+else
+  # Create the PRE_DOCKER chain
+  iptables -N BEFORE_DOCKER
+fi
+
+# Default action
+iptables -I BEFORE_DOCKER -j DROP
+# Docker internal use
+iptables -I BEFORE_DOCKER -o docker0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+iptables -I BEFORE_DOCKER -i docker0 -o docker0 -j ACCEPT
+# allow connections from local interface
+iptables -I BEFORE_DOCKER -i lo -j ACCEPT
+# Finally insert the BEFORE_DOCKER table before the DOCKER table in the FORWARD chain.
+iptables -I FORWARD -o docker0 -j BEFORE_DOCKER

@@ -1,0 +1,12 @@
+[Unit]
+Description=docker-hardening
+After=syslog.target network.target
+
+[Service]
+Type=oneshot
+ExecStart=/etc/docker-hardening.bash
+ExecStop=/sbin/iptables -F
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

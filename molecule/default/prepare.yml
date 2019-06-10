@@ -11,15 +11,13 @@
     - include_role:
         name: geerlingguy.docker
 
-    - name: Install setuptools
+    - name: Install Python tools
       apt:
-        name: python-setuptools
+        name: "{{ item.name }}"
         state: present
-
-    - name: Install pip
-      apt:
-        name: python-pip
-        state: present
+      with_items:
+        - name: python-setuptools
+        - name: python-pip
 
     - name: Ensure pip_install_packages are installed.
       pip:

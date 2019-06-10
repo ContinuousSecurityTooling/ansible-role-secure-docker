@@ -15,6 +15,12 @@ platforms:
     command: /sbin/init
     capabilities:
       - SYS_ADMIN
+    exposed_ports:
+      - 80/udp
+      - 80/tcp
+    published_ports:
+      - 0.0.0.0:8888:80/udp
+      - 0.0.0.0:8888:80/tcp
     groups:
       - debian
 provisioner:
@@ -27,6 +33,20 @@ provisioner:
   log: true
   lint:
     name: ansible-lint
+scenario:
+  name: default
+  test_sequence:
+    - lint
+    - destroy
+    - dependency
+    - syntax
+    - create
+    - prepare
+    - converge
+    # - idempotence
+    - side_effect
+    - verify
+    - destroy
 verifier:
   name: testinfra
   lint:

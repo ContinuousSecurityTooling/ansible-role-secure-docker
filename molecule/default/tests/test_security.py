@@ -1,4 +1,6 @@
 import os
+import requests
+from requests import ReadTimeout
 
 import testinfra.utils.ansible_runner
 
@@ -12,6 +14,9 @@ def test_webserver_connected_via_localhost(host):
     assert scks.is_listening
 
 def test_not_webserver_connected_via_public_network(host):
-
-    scks = host.socket("tcp://0.0.0.0:80")
-    assert not scks.is_listening
+    try:
+        response = requests.get('http://localhost:8888', verify=False, timeout=10)
+        # should be never reached
+        assert not response.status_code == 200
+    except ReadTimeout:
+        pass

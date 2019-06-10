@@ -9,6 +9,5 @@ testinfra_hosts = testinfra.utils.ansible_runner.AnsibleRunner(
 def test_docker(host):
 
     daemon = host.service("docker")
-    assert host.file("/etc/docker/daemon.json").exists
     assert daemon.is_running
     assert daemon.is_enabled

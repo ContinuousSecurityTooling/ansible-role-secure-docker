@@ -1,1 +1,51 @@
 ---
+# Global config
+iptables_supported_distributions: [ Debian ]
+iptables_packages: [ iptables-persistent ]
+iptables_template_header:
+  - "WARNING: This file is generated automatically with Ansible, do not edit directly!!"
+  - "---"
+
+# Network config
+iptables_v4_enabled: true
+iptables_v6_enabled: true
+
+# Begining of the firewall rules (top of the rules file)
+iptables_v4_rules_header:
+  - name: "Create the BEFORE_DOCKER chain"
+    rules:
+      - "*filter"
+      - ":INPUT ACCEPT [0:0]"
+      - ":FORWARD ACCEPT [0:0]"
+      - ":OUTPUT ACCEPT [0:0]"
+      - ":BEFORE_DOCKER - [0:0]"
+  - name: "Default action"
+    rules:
+      - "-A BEFORE_DOCKER -j DROP"
+  - name: "Allow Docker internal"
+    rules:
+      - "-A BEFORE_DOCKER -o docker0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT"
+      - "-A BEFORE_DOCKER -i docker0 -o docker0 -j ACCEPT"
+  - name: "Allow local connections"
+    rules:
+      - "-A BEFORE_DOCKER -i lo -j ACCEPT"
+      - "-A FORWARD -o docker0 -j BEFORE_DOCKER"
+iptables_v6_rules_header:
+  - name: "Default policy"
+    rules:
+      - "*filter"
+      - ":INPUT ACCEPT [0:0]"
+      - ":FORWARD ACCEPT [0:0]"
+      - ":OUTPUT ACCEPT [0:0]"
+
+# End of the firewall rules (bottom of the rules file)
+iptables_v4_rules_footer:
+  - name: "Finally insert the BEFORE_DOCKER table before the DOCKER table in the FORWARD chain."
+    rules:
+      - "-I BEFORE_DOCKER -i lo -j ACCEPT"
+      - "-I FORWARD -o docker0 -j BEFORE_DOCKER"
+iptables_v6_rules_footer: []
+
+
+# Misc
+TEST_ENV: "{{ 'molecule_' in ansible_hostname }}"
